@@ -16,13 +16,7 @@ public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
 
     public Categoria buscar(Long id){
-        Categoria categoria = new Categoria();
-        try {
-            // Buscar categoria por id - caso não ache irá lançar exeption
-            categoria = categoriaRepository.findById(id).orElseThrow(() -> new IdNotFound("Categoria não encontrado!"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new IdNotFound("Categoria não encontrado!"));  
         return categoria;
     }
     

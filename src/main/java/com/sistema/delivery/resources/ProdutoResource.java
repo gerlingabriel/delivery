@@ -1,7 +1,6 @@
 package com.sistema.delivery.resources;
 
 import com.sistema.delivery.domian.Produto;
-import com.sistema.delivery.exception.IdNotFound;
 import com.sistema.delivery.service.ProdutoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class ProdutoResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> find(@PathVariable Long id) throws IdNotFound{
+    public ResponseEntity<Produto> find(@PathVariable Long id){
         Produto produto = produtoService.buscarPorId(id);
         return ResponseEntity.ok().body(produto);
     }
