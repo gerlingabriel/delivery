@@ -2,8 +2,8 @@ package com.sistema.delivery.resources;
 
 import java.util.List;
 
-import com.sistema.delivery.domian.Cliente;
-import com.sistema.delivery.service.ClienteService;
+import com.sistema.delivery.domian.Pedido;
+import com.sistema.delivery.service.PedidoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,25 +21,25 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/pedidos")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ClienteResource {
+public class PedidoResource {
 
-    private final ClienteService service;
+    private final PedidoService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> find(@PathVariable Integer id){
+    public ResponseEntity<Pedido> find(@PathVariable Integer id){
         return ResponseEntity.ok().body(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> create(@RequestBody Cliente produto){
-        return ResponseEntity.ok().body(service.create(produto));
+    public ResponseEntity<Pedido> create(@RequestBody Pedido pedido){
+        return ResponseEntity.ok().body(service.create(pedido));
     }
 
     @PutMapping
-    public ResponseEntity<Cliente> update(@RequestBody Cliente produto){
-        service.create(produto);
+    public ResponseEntity<Void> update(@RequestBody Pedido pedido){
+        service.create(pedido);
         return ResponseEntity.noContent().build();
     }
 
@@ -50,9 +50,10 @@ public class ClienteResource {
     }
 
     @GetMapping
-    public ResponseEntity <List<Cliente>> findAll(){
+    public ResponseEntity <List<Pedido>> findAll(){
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
+
 
     
 }

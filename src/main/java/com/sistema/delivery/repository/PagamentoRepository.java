@@ -4,6 +4,6 @@ import com.sistema.delivery.domian.Pagamento;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
+public interface PagamentoRepository extends JpaRepository<Pagamento, Integer> {
     
 }

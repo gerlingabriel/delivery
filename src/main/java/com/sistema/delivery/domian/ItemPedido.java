@@ -1,15 +1,20 @@
 package com.sistema.delivery.domian;
 
-import javax.persistence.Embedded;
-import javax.persistence.Id;
+import java.io.Serializable;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
 @Data
-public class ItemPedido {
+@Entity
+public class ItemPedido implements Serializable{
 
-    @Id
-    @Embedded
+    @JsonIgnore
+    @EmbeddedId
     private ItemPedidoPk id = new ItemPedidoPk();
     private Double desconto;
     private Integer quantidade;

@@ -24,7 +24,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
 	// DevTools
-	compileOnly("org.springframework.boot:spring-boot-devtools")
+	developmentOnly  "org.springframework.boot:spring-boot-devtools"
 
 	// https://mvnrepository.com/artifact/com.h2database/h2
 	runtimeOnly 'com.h2database:h2'

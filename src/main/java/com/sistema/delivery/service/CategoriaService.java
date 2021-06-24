@@ -1,5 +1,7 @@
 package com.sistema.delivery.service;
 
+import java.util.List;
+
 import com.sistema.delivery.domian.Categoria;
 import com.sistema.delivery.exception.IdNotFound;
 import com.sistema.delivery.repository.CategoriaRepository;
@@ -13,11 +15,28 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CategoriaService {
 
-    private final CategoriaRepository categoriaRepository;
+    private final CategoriaRepository repository;
 
-    public Categoria buscar(Long id){
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new IdNotFound("Categoria não encontrado!"));  
+    public Categoria findById(Integer id){
+        Categoria categoria = repository.findById(id).orElseThrow(() -> new IdNotFound("Categoria não encontrado!"));  
         return categoria;
     }
+
+    public Categoria create(Categoria categoria) {
+        if (categoria.getId() != null) {
+            findById(categoria.getId());
+        }
+        return repository.save(categoria);
+    }
+
+    public void deleteId(Integer id) {
+        findById(id);
+        repository.deleteById(id);
+    }
+
+    public List<Categoria> findAll() {
+        return repository.findAll();
+    }
+
     
 }

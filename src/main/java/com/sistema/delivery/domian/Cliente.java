@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sistema.delivery.enums.TipoCliente;
 
@@ -37,6 +38,7 @@ public class Cliente implements Serializable {
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones;
 
+    @JsonIgnore // pedido ira mostra os clientes
     @OneToMany(mappedBy = "cliente") // nome do atributo que mapeou
     private List<Pedido> pedidos;
 
