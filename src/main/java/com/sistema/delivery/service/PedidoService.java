@@ -18,7 +18,7 @@ public class PedidoService {
     private final PedidoRepository repository;
 
     public Pedido findById(Integer id){
-        Pedido pedido = repository.findById(id).orElseThrow(() -> new IdNotFound("Categoria não encontrado!"));  
+        Pedido pedido = repository.findById(id).orElseThrow(() -> new IdNotFound(Pedido.class.getSimpleName() +" não encontrado!"));  
         return pedido;
     }
 

@@ -12,8 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sistema.delivery.enums.TipoCliente;
 
 import lombok.Data;
@@ -30,7 +29,7 @@ public class Cliente implements Serializable {
     private String cpfOuCnpj;
     private Integer tipoCliente;
 
-    @JsonManagedReference // Ele poderia ver os endereços
+     // Ele poderia ver os endereços
     @OneToMany(mappedBy = "cliente")
     private List<Endereco> endereco;
 
@@ -38,7 +37,7 @@ public class Cliente implements Serializable {
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones;
 
-    @JsonIgnore // pedido ira mostra os clientes
+    @JsonBackReference // pedido ira mostra os clientes
     @OneToMany(mappedBy = "cliente") // nome do atributo que mapeou
     private List<Pedido> pedidos;
 
@@ -48,7 +47,7 @@ public class Cliente implements Serializable {
         this.nome = nome;
         this.email = email;
         this.cpfOuCnpj = cpfOuCnpj;
-        this.tipoCliente = tipoCliente.getCod();
+        this.tipoCliente = (tipoCliente == null) ? null: tipoCliente.getCod();
         this.endereco = endereco;
         this.telefones = telefones;
     }

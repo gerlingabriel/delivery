@@ -1,12 +1,20 @@
 package com.sistema.delivery.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sistema.delivery.domian.Categoria;
+import com.sistema.delivery.dto.CategoriaDTO;
+import com.sistema.delivery.exception.DataInntergratyException;
 import com.sistema.delivery.exception.IdNotFound;
 import com.sistema.delivery.repository.CategoriaRepository;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -16,26 +24,45 @@ import lombok.RequiredArgsConstructor;
 public class CategoriaService {
 
     private final CategoriaRepository repository;
+    private final ModelMapper modelMapper = new ModelMapper();
 
-    public Categoria findById(Integer id){
-        Categoria categoria = repository.findById(id).orElseThrow(() -> new IdNotFound("Categoria não encontrado!"));  
-        return categoria;
+    public CategoriaDTO findById(Integer id){
+        Categoria categoria = repository.findById(id).orElseThrow(() -> new IdNotFound(Categoria.class.getSimpleName() +" não encontrado!"));  
+        return modelMapper.map(categoria, CategoriaDTO.class);
     }
 
-    public Categoria create(Categoria categoria) {
-        if (categoria.getId() != null) {
-            findById(categoria.getId());
+    public CategoriaDTO create(CategoriaDTO categoriaDTO) {
+        if (categoriaDTO.getId() != null) {
+            findById(categoriaDTO.getId());
         }
-        return repository.save(categoria);
+        Categoria categoria = modelMapper.map(categoriaDTO, Categoria.class);
+        return modelMapper.map(repository.save(categoria), CategoriaDTO.class);
     }
 
     public void deleteId(Integer id) {
         findById(id);
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataInntergratyException("Categoria ainda possui Produto cadastrado(s)!");
+        }
+        
     }
 
-    public List<Categoria> findAll() {
-        return repository.findAll();
+    public List<CategoriaDTO> findAll() {
+        return repository.findAll().stream()
+                                    .map(categoria -> modelMapper.map(categoria, CategoriaDTO.class))
+                                    .collect(Collectors.toList());
+    }
+
+    public Page<CategoriaDTO> findAllPage(int page, int size, String direction,String orderBy){
+        PageRequest pageRequest;
+        if (direction.equals("ASC")) {
+            pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, orderBy));
+        } else {
+            pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        }
+        return repository.findAll(pageRequest).map(categoria -> modelMapper.map(categoria, CategoriaDTO.class));
     }
 
     
