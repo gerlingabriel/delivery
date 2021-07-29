@@ -9,11 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import lombok.Data;
-
-@Data
 @Entity
 public class Estado implements Serializable {
     
@@ -22,8 +19,34 @@ public class Estado implements Serializable {
     private Integer id;
     private String nome;
 
-    @JsonIgnore // estado não pegara cidade 
+    @JsonBackReference // estado não pegara cidade 
     @OneToMany(mappedBy = "estado")
     private List<Cidade> cidades;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<Cidade> getCidades() {
+        return cidades;
+    }
+
+    public void setCidades(List<Cidade> cidades) {
+        this.cidades = cidades;
+    }
+
+
 
 }

@@ -1,16 +1,25 @@
 package com.sistema.delivery.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum EstadoPagamento {
 
     PENDENTE("Pendente"), 
     QUITADO("Quitado"),
     CANCELADO("Cancelado");
 
+    private EstadoPagamento(String status) {
+        this.status = status;
+    }
+
     private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    
 
 }

@@ -15,13 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ProdutoService {
 
-    private final ProdutoRepository repository;
+    @Autowired
+    private ProdutoRepository repository;
+    @Autowired
     private final ModelMapper modelMapper = new ModelMapper();
 
     public ProdutoDTO findById(Integer id) {
@@ -48,16 +47,42 @@ public class ProdutoService {
                                 .collect(Collectors.toList());
     }
 
-    public Page<ProdutoDTO> findAllPage(int page, int size, String direction,String orderBy){
+    public Page<ProdutoDTO> findAllPage(int page, int size, String direction,String orderBy, String nomeDoProduto, String categoria){
+        PageRequest pageRequest;
+
+        pageRequest = ordenarDirecao(page, size, direction, orderBy);
+
+        return verificarPesquisa(nomeDoProduto, categoria, pageRequest);
+    }
+
+    private PageRequest ordenarDirecao(int page, int size, String direction, String orderBy) {
         PageRequest pageRequest;
         if (direction.equals("ASC")) {
             pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, orderBy));
         } else {
             pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
         }
-        return repository.findAll(pageRequest).map(produto -> modelMapper.map(produto, ProdutoDTO.class));
+        return pageRequest;
     }
 
+    private Page<ProdutoDTO> verificarPesquisa(String nomeDoProduto, String categoria, PageRequest pageRequest ){
+
+        Page<ProdutoDTO> pageProduto = null;
+
+        if (nomeDoProduto.isEmpty() && categoria.isEmpty()) {
+            pageProduto =  repository.findAll(pageRequest).map(produto -> modelMapper.map(produto, ProdutoDTO.class));
+        } else if (!nomeDoProduto.isEmpty() && categoria.isEmpty()) {
+            pageProduto = repository.findByNomeContainsIgnoreCase(nomeDoProduto, pageRequest).map(produto -> modelMapper.map(produto, ProdutoDTO.class));
+        } else if (nomeDoProduto.isEmpty() && !categoria.isEmpty()){
+            int idCategoria =Integer.parseInt(categoria);
+            pageProduto = repository.findByCategoriasId(idCategoria, pageRequest).map(produto -> modelMapper.map(produto, ProdutoDTO.class));
+        } else {
+            Integer idCategoria =Integer.valueOf(categoria);
+            pageProduto = repository.findByCategoriasIdAndNomeContainsIgnoreCase(idCategoria, nomeDoProduto, pageRequest).map(produto -> modelMapper.map(produto, ProdutoDTO.class));
+        }
+
+        return pageProduto;
+    }
 
 
 }

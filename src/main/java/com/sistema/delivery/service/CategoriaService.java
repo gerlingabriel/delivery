@@ -17,14 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CategoriaService {
 
-    private final CategoriaRepository repository;
-    private final ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private CategoriaRepository repository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     public CategoriaDTO findById(Integer id){
         Categoria categoria = repository.findById(id).orElseThrow(() -> new IdNotFound(Categoria.class.getSimpleName() +" não encontrado!"));  

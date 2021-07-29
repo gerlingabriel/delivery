@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.sistema.delivery.domian.Cliente;
+import com.sistema.delivery.domian.Endereco;
 import com.sistema.delivery.dto.ClienteDTO;
 import com.sistema.delivery.dto.ClienteNewDTO;
+import com.sistema.delivery.enums.TipoCliente;
 import com.sistema.delivery.exception.DataInntergratyException;
 import com.sistema.delivery.exception.IdNotFound;
 import com.sistema.delivery.repository.ClienteRepository;
@@ -18,15 +20,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ClienteService {
 
-    private final ClienteRepository repository;
-    private final ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private ClienteRepository repository;
+    @Autowired
+    private ModelMapper modelMapper = new ModelMapper();
 
     public ClienteDTO findById(Integer id){
         Cliente cliente = repository.findById(id).orElseThrow(() -> new IdNotFound(Cliente.class.getSimpleName() + " não encontrado!"));  
@@ -37,8 +38,23 @@ public class ClienteService {
         if (clienteNewDTO.getId() != null) {
             findById(clienteNewDTO.getId());
         }
-        Cliente cliente = modelMapper.map(clienteNewDTO, Cliente.class);
+        Cliente cliente = converterClienteDTOEmCleinte(clienteNewDTO);  
         return modelMapper.map(repository.save(cliente), ClienteDTO.class);
+    }
+
+    private Cliente converterClienteDTOEmCleinte(ClienteNewDTO clienteNewDTO) {
+        Cliente cliente = new Cliente(clienteNewDTO.getNome(), clienteNewDTO.getEmail(), clienteNewDTO.getCpfOuCnpj(), TipoCliente.toEnum(clienteNewDTO.getTipoCliente()), clienteNewDTO.getTelefones());
+        Endereco enderecoNovo = new Endereco();
+        enderecoNovo.setLogradouro(clienteNewDTO.getEnderecos().get(0).getLogradouro()); 
+        enderecoNovo.setNumero(clienteNewDTO.getEnderecos().get(0).getNumero()); 
+        enderecoNovo.setComplemento(clienteNewDTO.getEnderecos().get(0).getComplemento());
+        enderecoNovo.setBairro( clienteNewDTO.getEnderecos().get(0).getBairro() );
+        enderecoNovo.setCep(clienteNewDTO.getEnderecos().get(0).getCep()); 
+        enderecoNovo.setCidade(clienteNewDTO.getEnderecos().get(0).getCidadeId());
+        enderecoNovo.setCliente(cliente); 
+        
+        cliente.getEnderecos().add(enderecoNovo);
+        return cliente;
     }
 
     public void deleteId(Integer id) {

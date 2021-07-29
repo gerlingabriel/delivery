@@ -2,16 +2,22 @@ package com.sistema.delivery.domian;
 
 import javax.persistence.Entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
-@Getter
-@Setter
-@AllArgsConstructor
 @Entity
+@JsonTypeName("pcc")
 public class PagamentoComCartao extends Pagamento {
 
     private Integer numerosDeparcelas;
+
+    public Integer getNumerosDeparcelas() {
+        return numerosDeparcelas;
+    }
+
+    public void setNumerosDeparcelas(Integer numerosDeparcelas) {
+        this.numerosDeparcelas = numerosDeparcelas;
+    }
+
+    
     
 }

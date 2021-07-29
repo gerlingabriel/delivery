@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.sistema.delivery.dto.CategoriaDTO;
-import com.sistema.delivery.service.CategoriaService;
+import com.sistema.delivery.domian.Cidade;
+import com.sistema.delivery.service.CidadeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,27 +25,27 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/categorias")
-public class CategoriaResource {
+@RequestMapping("/cidades")
+public class CidadeResource {
 
     @Autowired
-    private CategoriaService service;
+    private CidadeService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaDTO> find(@PathVariable Integer id){
+    public ResponseEntity<Cidade> find(@PathVariable Integer id){
         return ResponseEntity.ok().body(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Void> insert(@RequestBody @Valid CategoriaDTO categoria){
-        categoria  = service.create(categoria);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri();
+    public ResponseEntity<Void> insert(@RequestBody @Valid Cidade cidade){
+        cidade  = service.create(cidade);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cidade.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody @Valid CategoriaDTO categoria){
-        service.create(categoria);
+    public ResponseEntity<Void> update(@RequestBody @Valid Cidade cidade){
+        service.create(cidade);
         return ResponseEntity.noContent().build();
     }
 
@@ -56,12 +56,12 @@ public class CategoriaResource {
     }
 
     @GetMapping
-    public ResponseEntity <List<CategoriaDTO>> findAll(){
+    public ResponseEntity <List<Cidade>> findAll(){
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/page")
-    public ResponseEntity <Page<CategoriaDTO>> findAllPage(
+    public ResponseEntity <Page<Cidade>> findAllPage(
                 @RequestParam(value = "page", defaultValue = "0") int page, 
                 @RequestParam(value = "size", defaultValue = "24") int size, 
                 @RequestParam(value = "direction", defaultValue = "ASC") String direction, // ou DESC
@@ -69,6 +69,4 @@ public class CategoriaResource {
                 {
         return ResponseEntity.ok().body(service.findAllPage(page, size, direction, orderBy));
     }
-
-    
 }

@@ -1,14 +1,14 @@
 package com.sistema.delivery.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@AllArgsConstructor
-@Getter
 public enum TipoCliente {
 
     PESSOAFISICA(1, "Pessoa Física"),
     PESSOAJURIDICA(2, "pessoa Jurídica");
+
+    private TipoCliente(int cod, String descricao) {
+        this.cod = cod;
+        this.descricao = descricao;
+    }
 
     private int cod;
     private String descricao;
@@ -22,4 +22,22 @@ public enum TipoCliente {
         }
         throw new IllegalArgumentException("Id inváldio :" +cod);
     }
+
+    public int getCod() {
+        return cod;
+    }
+
+    public void setCod(int cod) {
+        this.cod = cod;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    
 }

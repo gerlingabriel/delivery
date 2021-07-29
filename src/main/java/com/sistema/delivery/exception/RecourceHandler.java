@@ -15,12 +15,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @ControllerAdvice
 public class RecourceHandler {
 
@@ -51,34 +45,77 @@ public class RecourceHandler {
     /**
      * Método paa pegar erros criado
      */
-    @Setter
-    @Getter
-    @AllArgsConstructor
+
     class MsgErro {
         private Integer status;
         private String msg;
 
         @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
         private LocalDateTime timestamp;
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+
+        public LocalDateTime getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(LocalDateTime timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public MsgErro(Integer status, String msg, LocalDateTime timestamp) {
+            this.status = status;
+            this.msg = msg;
+            this.timestamp = timestamp;
+        }
+
+        
     }
 
     /**
      * Class para colocar nome do erro do Valid
      */
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
+
     public class CampError {
 
         private String codeErro;
         private String messegeErro;
+        public String getCodeErro() {
+            return codeErro;
+        }
+        public void setCodeErro(String codeErro) {
+            this.codeErro = codeErro;
+        }
+        public String getMessegeErro() {
+            return messegeErro;
+        }
+        public void setMessegeErro(String messegeErro) {
+            this.messegeErro = messegeErro;
+        }
+        public CampError(String codeErro, String messegeErro) {
+            this.codeErro = codeErro;
+            this.messegeErro = messegeErro;
+        }
 
     }
 
     /**
      * Metodo para pegar a lsita de erros do @Valid
      */
-    @Getter
     public class ValidadeError extends MsgErro {
 
         private List<CampError> list = new ArrayList<>(); // imporante instaciar a lista não for feito isto antes
@@ -90,6 +127,11 @@ public class RecourceHandler {
         public void adderror(String codeErro, String messegeErro) {
             list.add(new CampError(codeErro, messegeErro));
         }
+
+        public List<CampError> getList() {
+            return list;
+        }
+        
 
     }
 }
