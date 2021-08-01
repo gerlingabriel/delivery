@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import com.sistema.delivery.domian.ItemPedido;
 import com.sistema.delivery.domian.PagamentoComBoleto;
 import com.sistema.delivery.domian.Pedido;
-import com.sistema.delivery.domian.Produto;
 import com.sistema.delivery.dto.ClienteDTOPedido;
 import com.sistema.delivery.dto.EnderecoDTO;
 import com.sistema.delivery.dto.ItemPedidoDTO;
@@ -17,7 +16,6 @@ import com.sistema.delivery.dto.ProdutoDTO;
 import com.sistema.delivery.enums.EstadoPagamento;
 import com.sistema.delivery.exception.IdNotFound;
 import com.sistema.delivery.repository.PedidoRepository;
-import com.sistema.delivery.repository.ProdutoRepository;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NamingConventions;
@@ -32,14 +30,16 @@ public class PedidoService {
     @Autowired
     private BoletoService boletoService;
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private ProdutoService produtoService;
     @Autowired
     private ModelMapper modelMapper = new ModelMapper();
 
     public PedidoDTOResp findById(Integer id) {
         Pedido pedido = repository.findById(id)
                 .orElseThrow(() -> new IdNotFound(Pedido.class.getSimpleName() + " não encontrado!"));
-        return conversaoPedidoParaPedidoDTOResp(pedido);
+        PedidoDTOResp dto = conversaoPedidoParaPedidoDTOResp(pedido);
+        System.out.println(dto);
+        return dto;
     }
 
     public PedidoDTOResp create(PedidoDTO pedidoDTO) {
@@ -56,7 +56,7 @@ public class PedidoService {
             verificarPagamento(pedido);
 
             for (ItemPedido item : pedido.getItens()) {
-                Produto produto = produtoRepository.findById(item.getId().getProduto().getId()).get();
+                ProdutoDTO produto = produtoService.findById(item.getId().getProduto().getId());
                 item.setDesconto(0.0);
                 item.setPreco(produto.getPreco());
                 item.getId().setPedido(pedido);

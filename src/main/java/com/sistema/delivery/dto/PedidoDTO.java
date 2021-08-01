@@ -77,6 +77,25 @@ public class PedidoDTO {
         this.itens = itens;
     }
 
-    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Pedido número: ");
+        builder.append(getId());
+        builder.append(" ,Dia Pedido: ");
+        builder.append(getInstante());
+        builder.append(" ,Cliente: ");
+        builder.append(getCliente().getNome());
+        builder.append(" ,Situação do Pagaento: ");
+        builder.append(getPagamento().getStatus());
+        builder.append(" ,Detalhe da compra: ");
+        for (ItemPedidoDTO itemPedidoDTO : getItens()) {
+            builder.append(itemPedidoDTO.toString());
+        }
+        builder.append("Valor Total: ");
+        builder.append(getSomaTotal());
+
+        return builder.toString();
+    }    
     
 }

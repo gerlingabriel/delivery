@@ -1,8 +1,11 @@
 package com.sistema.delivery.dto;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -77,6 +80,29 @@ public class PedidoDTOResp {
         this.itens = itens;
     }
 
+    @Override
+    public String toString() {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        StringBuilder builder = new StringBuilder();
+        builder.append("Pedido número: ");
+        builder.append(getId());
+        builder.append(" ,Dia Pedido: ");
+        builder.append(dateFormat.format(getInstante()));
+        builder.append(" ,Cliente: ");
+        builder.append(getCliente().getNome());
+        builder.append(" ,Situação do Pagaento: ");
+        builder.append(getPagamento().getStatus());
+        builder.append(" ,Detalhe da compra: ");
+        builder.append("\n");
+        for (ItemPedidoDTO itemPedidoDTO : getItens()) {
+            builder.append(itemPedidoDTO.toString());
+        }
+        builder.append("Valor Total: ");
+        builder.append(nf.format(getSomaTotal()));
+
+        return builder.toString();
+    }
     
     
 }

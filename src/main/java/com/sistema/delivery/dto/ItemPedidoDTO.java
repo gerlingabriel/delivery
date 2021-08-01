@@ -1,7 +1,12 @@
 package com.sistema.delivery.dto;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+
 
 public class ItemPedidoDTO {
 
@@ -67,5 +72,23 @@ public class ItemPedidoDTO {
 
     public ItemPedidoDTO() {
     }
+
+    @Override
+    public String toString() {
+        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        StringBuilder builder = new StringBuilder();
+        builder.append(getProduto().getNome());
+        builder.append(" , Qtd: ");
+        builder.append(getQuantidade());
+        builder.append(" , Preço unitário: ");
+        builder.append(nf.format(getPreco()));
+        builder.append(" , Total: ");
+        builder.append(nf.format(getSubPedido()));
+        builder.append("\n");
+
+        return builder.toString();
+    }
+
+    
 
 }

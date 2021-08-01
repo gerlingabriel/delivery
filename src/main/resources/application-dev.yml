@@ -1,0 +1,13 @@
+# H@
+spring:    
+    datasource:
+        url: jdbc:mysql://localhost:3307/derivery?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: root
+
+    jpa:
+        hibernate:
+            ddl-auto: update
+
+
+
