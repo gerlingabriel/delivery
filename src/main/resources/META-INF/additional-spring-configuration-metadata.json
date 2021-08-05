@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "email.enviar",
+    "type": "java.lang.String",
+    "description": "A description for 'email.enviar'"
+  },
+  {
+    "name": "email.receber",
+    "type": "java.lang.String",
+    "description": "A description for 'email.receber'"
+  }
+]}

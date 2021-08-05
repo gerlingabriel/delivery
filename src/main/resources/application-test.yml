@@ -17,6 +17,3 @@ spring:
             ddl-auto: update
 
 
-email:
-    enviar: email.para.estudos.java@gmail.com
-    receber: email.para.estudos.java@gmail.com

@@ -3,8 +3,30 @@ spring:
     active:
     - test
 
+
 # spring:
 #   profiles:
 #     active:
 #     - dev
+
+  mail:
+      host: smtp.gmail.com
+      username: email.para.estudos.java@gmail.com
+      password: xxxxxxxx
+      properties:
+        mail:
+          smtp:
+            auth: true
+            sockertFactory: 
+              port: 465
+              class: javax.net.ssl.SSLSocketFactory
+              fallback: false
+              tarttls:
+                enable: true
+                ssl:
+                  enable: true
+
+email:
+    enviar: email.para.estudos.java@gmail.com
+    receber: email.para.estudos.java@gmail.com
 

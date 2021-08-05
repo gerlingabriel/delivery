@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.sistema.delivery.domian.Cliente;
 import com.sistema.delivery.domian.ItemPedido;
 import com.sistema.delivery.domian.PagamentoComBoleto;
 import com.sistema.delivery.domian.Pedido;
@@ -21,8 +22,10 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NamingConventions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PedidoService {
 
     @Autowired
@@ -33,6 +36,10 @@ public class PedidoService {
     private ProdutoService produtoService;
     @Autowired
     private ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private ClienteService clienteService;
 
     public PedidoDTOResp findById(Integer id) {
         Pedido pedido = repository.findById(id)
@@ -64,6 +71,8 @@ public class PedidoService {
 
         }
         repository.save(pedido);
+        pedido.setCliente(modelMapper.map(clienteService.findById(pedido.getCliente().getId()), Cliente.class));
+        emailService.sendOrderConfirmationHtmlEmail(pedido);
         return conversaoPedidoParaPedidoDTOResp(pedido);
     }
 

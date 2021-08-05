@@ -87,8 +87,6 @@ public class ItemPedidoDTO {
         builder.append("\n");
 
         return builder.toString();
-    }
-
-    
+    }    
 
 }

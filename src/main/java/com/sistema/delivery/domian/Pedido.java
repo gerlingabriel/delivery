@@ -125,6 +125,28 @@ public class Pedido implements Serializable {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Pedido número: ");
+        builder.append(getId());
+        builder.append(" ,Dia Pedido: ");
+        builder.append(getInstante());
+        builder.append(" ,Cliente: ");
+        builder.append(getCliente().getNome());
+        builder.append(" ,Situação do Pagaento: ");
+        builder.append(getPagamento().getStatus());
+        builder.append(" ,Detalhe da compra: ");
+        for (ItemPedido itemPedido : getItens()) {
+            builder.append(itemPedido.toString());
+        }
+        builder.append("Valor Total: ");
+        builder.append(getSomaTotal());
+
+        return builder.toString();
+    }    
+    
     
 
 }
