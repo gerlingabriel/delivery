@@ -8,5 +8,15 @@
     "name": "email.receber",
     "type": "java.lang.String",
     "description": "A description for 'email.receber'"
+  },
+  {
+    "name": "jwt.secredo",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.secredo'"
+  },
+  {
+    "name": "jwt.expiracao",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.expiracao'"
   }
 ]}

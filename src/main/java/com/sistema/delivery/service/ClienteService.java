@@ -7,10 +7,13 @@ import com.sistema.delivery.domian.Cliente;
 import com.sistema.delivery.domian.Endereco;
 import com.sistema.delivery.dto.ClienteDTO;
 import com.sistema.delivery.dto.ClienteNewDTO;
+import com.sistema.delivery.enums.Perfil;
 import com.sistema.delivery.enums.TipoCliente;
+import com.sistema.delivery.exception.AcessoAUsuarioNegado;
 import com.sistema.delivery.exception.DataInntergratyException;
 import com.sistema.delivery.exception.IdNotFound;
 import com.sistema.delivery.repository.ClienteRepository;
+import com.sistema.delivery.security.UsuarioLogin;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +21,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@Transactional
 public class ClienteService {
 
     @Autowired
@@ -30,6 +36,12 @@ public class ClienteService {
     private ModelMapper modelMapper = new ModelMapper();
 
     public ClienteDTO findById(Integer id){
+        UsuarioLogin login = UsuarioLogado.emailDoLogin();
+
+        if (login == null || !login.hasRole(Perfil.ADMIN) && !id.equals(login.getId())) {
+            throw new AcessoAUsuarioNegado("Acesso negado");
+        }
+
         Cliente cliente = repository.findById(id).orElseThrow(() -> new IdNotFound(Cliente.class.getSimpleName() + " não encontrado!"));  
         return modelMapper.map(cliente, ClienteDTO.class);
     }
@@ -38,12 +50,15 @@ public class ClienteService {
         if (clienteNewDTO.getId() != null) {
             findById(clienteNewDTO.getId());
         }
+        // criptografar senha
+        clienteNewDTO.setSenha(new BCryptPasswordEncoder().encode(clienteNewDTO.getSenha()));
         Cliente cliente = converterClienteDTOEmCleinte(clienteNewDTO);  
         return modelMapper.map(repository.save(cliente), ClienteDTO.class);
     }
 
     private Cliente converterClienteDTOEmCleinte(ClienteNewDTO clienteNewDTO) {
-        Cliente cliente = new Cliente(clienteNewDTO.getNome(), clienteNewDTO.getEmail(), clienteNewDTO.getCpfOuCnpj(), TipoCliente.toEnum(clienteNewDTO.getTipoCliente()), clienteNewDTO.getTelefones());
+        Cliente cliente = new Cliente(clienteNewDTO.getNome(), clienteNewDTO.getEmail(), clienteNewDTO.getCpfOuCnpj(), TipoCliente.toEnum(clienteNewDTO.getTipoCliente()), clienteNewDTO.getSenha(), clienteNewDTO.getTelefones());
+        cliente.addPerfil(Perfil.toEnum(2));
         Endereco enderecoNovo = new Endereco();
         enderecoNovo.setLogradouro(clienteNewDTO.getEnderecos().get(0).getLogradouro()); 
         enderecoNovo.setNumero(clienteNewDTO.getEnderecos().get(0).getNumero()); 

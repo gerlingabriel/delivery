@@ -3,9 +3,13 @@ package com.sistema.delivery.dto;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+
+import com.sistema.delivery.enums.Perfil;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -18,6 +22,7 @@ public class ClienteNewDTO implements Serializable {
     private String nome;
 
     @Email
+    @Column(unique = true)
     private String email;
 
     @NotEmpty(message = "CPF/CNPJ não pode ser nulo ou vazio!")
@@ -27,6 +32,23 @@ public class ClienteNewDTO implements Serializable {
     private Integer tipoCliente;
     
     private List<EnderecoDTO> enderecos;
+
+    @NotEmpty(message = "Senha não pode ser nulo ou vazia!")
+    @Length(min = 3, max = 80, message = "Minino de palavras 3 e máximo 15")
+    private String senha;
+
+    private Set<Integer> perfis;
+
+    public Set<Perfil> getPerfis() {
+        return perfis
+                .stream()
+                .map(x -> Perfil.toEnum(x))
+                .collect(Collectors.toSet());
+    }
+
+    public void addPerfil(Perfil perfil){
+        perfis.add(perfil.getCod());
+    }
 
     // Telefones
     private Set<String> telefones;
@@ -85,6 +107,14 @@ public class ClienteNewDTO implements Serializable {
 
     public void setTelefones(Set<String> telefones) {
         this.telefones = telefones;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     

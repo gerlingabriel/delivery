@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import com.sistema.delivery.domian.Cliente;
 import com.sistema.delivery.domian.Pedido;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,35 @@ public abstract class AbstratcEmailService implements EmailService {
         helper.setSentDate(new Date(System.currentTimeMillis()));
         helper.setText(htmlFromTemplatePedido(pedido), true);
         return simpleMailMessage;
+    }
+
+    // recuperar email
+    // para esse envindo não é enviado html entao email simples
+    @Override
+    public void envioDeEmailEsquecido(Cliente cliente, String newPass){
+
+        SimpleMailMessage simpleMailMessage;
+        try {
+            simpleMailMessage = prepararEmailParaRecuperar(cliente, newPass);
+
+            //Enviando esse arquivo para as configuraçẽos no propeties
+            sendEmail(simpleMailMessage);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        
+    }
+
+    protected SimpleMailMessage prepararEmailParaRecuperar(Cliente cliente, String newPass) throws MessagingException {
+        SimpleMailMessage helper = new SimpleMailMessage();
+        helper.setTo(cliente.getEmail());
+        helper.setFrom(sender);
+        helper.setSubject("Solicitação de uma nova senha");
+        helper.setSentDate(new Date(System.currentTimeMillis()));
+        helper.setText("A senha nova é: " + newPass);
+        return helper;
     }
     
 }

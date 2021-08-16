@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +37,6 @@ public class ClienteResource {
     @PostMapping
     public ResponseEntity<ClienteDTO> create(@RequestBody ClienteNewDTO cliente){
         return ResponseEntity.ok().body(service.create(cliente));
-
     }
 
     @PutMapping
@@ -45,17 +45,21 @@ public class ClienteResource {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id){
         service.deleteId(id);
     }
 
+    
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public ResponseEntity <List<ClienteDTO>> findAll(){
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/page")
     public ResponseEntity <Page<ClienteDTO>> findAllPage(
                 @RequestParam(value = "page", defaultValue = "0") int page, 

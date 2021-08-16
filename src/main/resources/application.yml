@@ -12,7 +12,7 @@ spring:
   mail:
       host: smtp.gmail.com
       username: email.para.estudos.java@gmail.com
-      password: xxxxxxxx
+      password: xxxxxxx
       properties:
         mail:
           smtp:
@@ -29,4 +29,9 @@ spring:
 email:
     enviar: email.para.estudos.java@gmail.com
     receber: email.para.estudos.java@gmail.com
+
+jwt:
+  secredo: TesteParaTokenExperirar
+  expiracao: 60000
+
 

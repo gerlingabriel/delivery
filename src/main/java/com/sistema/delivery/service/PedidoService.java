@@ -15,12 +15,18 @@ import com.sistema.delivery.dto.PedidoDTO;
 import com.sistema.delivery.dto.PedidoDTOResp;
 import com.sistema.delivery.dto.ProdutoDTO;
 import com.sistema.delivery.enums.EstadoPagamento;
+import com.sistema.delivery.exception.AcessoAUsuarioNegado;
 import com.sistema.delivery.exception.IdNotFound;
+import com.sistema.delivery.repository.ClienteRepository;
 import com.sistema.delivery.repository.PedidoRepository;
+import com.sistema.delivery.security.UsuarioLogin;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NamingConventions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +46,8 @@ public class PedidoService {
     private EmailService emailService;
     @Autowired
     private ClienteService clienteService;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     public PedidoDTOResp findById(Integer id) {
         Pedido pedido = repository.findById(id)
@@ -86,6 +94,26 @@ public class PedidoService {
         return repository.findAll().stream().map(this::conversaoPedidoParaPedidoDTOResp).collect(Collectors.toList());
     }
 
+    public Page<PedidoDTOResp> findAllPage(int page, int size, String direction,String orderBy){
+        UsuarioLogin usuarioLogin = UsuarioLogado.emailDoLogin();
+
+        if (usuarioLogin == null) {
+            throw new AcessoAUsuarioNegado("Acesso negado!");
+        }
+
+        Cliente cliente = clienteRepository.findById(usuarioLogin.getId()).orElseThrow(() -> new IdNotFound(Cliente.class.getSimpleName() + " não encontrado!"));
+
+        PageRequest pageRequest;
+
+        if (direction.equals("ASC")) {
+            pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, orderBy));
+        } else {
+            pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, orderBy));
+        }
+        return repository.findByCliente(cliente, pageRequest).map(pedido -> modelMapper.map(pedido  , PedidoDTOResp.class));
+    }
+
+    // Métodos privados
     private void verificarPagamento(Pedido pedido) {
         if (pedido.getPagamento() instanceof PagamentoComBoleto) {
             PagamentoComBoleto pgto = (PagamentoComBoleto) pedido.getPagamento();

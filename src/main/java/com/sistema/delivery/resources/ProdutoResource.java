@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ public class ProdutoResource {
     @Autowired
     private ProdutoService service;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProdutoDTO> create(@RequestBody ProdutoDTO produto){
         return ResponseEntity.ok().body(service.create(produto));
@@ -40,12 +42,14 @@ public class ProdutoResource {
         return ResponseEntity.ok().body(produto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody ProdutoDTO produto){
         service.create(produto);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id){

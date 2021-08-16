@@ -24,12 +24,19 @@ public class RecourceHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
+    @ExceptionHandler(UsuarioNaoExiste.class)
+    public ResponseEntity<MsgErro> usuarioNaoExiste(UsuarioNaoExiste e, HttpServletRequest request) {
+        MsgErro err = new MsgErro(HttpStatus.NOT_FOUND.value(), e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+
     @ExceptionHandler(DataInntergratyException.class)
     public ResponseEntity<MsgErro> doNotDeleteCategoryWithproduct(DataInntergratyException e,
             HttpServletRequest request) {
         MsgErro err = new MsgErro(HttpStatus.BAD_REQUEST.value(), e.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<MsgErro> validationCamp(MethodArgumentNotValidException e, HttpServletRequest request) {

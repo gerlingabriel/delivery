@@ -2,19 +2,23 @@ package com.sistema.delivery.domian;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sistema.delivery.enums.Perfil;
 import com.sistema.delivery.enums.TipoCliente;
 
 @Entity
@@ -27,6 +31,7 @@ public class Cliente implements Serializable {
     private String email;
     private String cpfOuCnpj;
     private Integer tipoCliente;
+    private String senha;
 
      // Ele poderia ver os endereços
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
@@ -36,17 +41,36 @@ public class Cliente implements Serializable {
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Integer> perfis = new HashSet<>();
+
     @JsonBackReference // pedido ira mostra os clientes
     @OneToMany(mappedBy = "cliente") // nome do atributo que mapeou
     private List<Pedido> pedidos;
 
-    public Cliente(String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente,
-             Set<String> telefones) {
+    public Cliente() {
+        addPerfil(Perfil.USER);
+    }
+
+    public Cliente(String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente, String senha, Set<String> telefones) {
         this.nome = nome;
         this.email = email;
         this.cpfOuCnpj = cpfOuCnpj;
         this.tipoCliente = (tipoCliente == null) ? null: tipoCliente.getCod();
         this.telefones = telefones;
+        this.senha = senha;
+        addPerfil(Perfil.USER);
+    }
+
+    public Set<Perfil> getPerfis() {
+        return perfis
+                .stream()
+                .map(x -> Perfil.toEnum(x))
+                .collect(Collectors.toSet());
+    }
+
+    public void addPerfil(Perfil perfil){
+        perfis.add(perfil.getCod());
     }
 
     // Métodos mais sofisticado para controle de ENUM
@@ -118,7 +142,12 @@ public class Cliente implements Serializable {
         this.pedidos = pedidos;
     }
 
-    public Cliente() {
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
     
     
